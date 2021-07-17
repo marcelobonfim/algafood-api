@@ -20,11 +20,11 @@ public class Problem {
 	private String title;
 	private String detail;
 	private String userMessage;
-	private List<Field> fields;
+	private List<Validation> validations;
 
 	@Getter
 	@Builder
-	public static class Field {
+	public static class Validation {
 
 		private String name;
 		private String message;
