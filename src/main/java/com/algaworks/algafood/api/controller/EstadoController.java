@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.mapper.EstadoInputMapper;
+import com.algaworks.algafood.api.mapper.EstadoResponseMapper;
+import com.algaworks.algafood.api.model.input.EstadoInput;
+import com.algaworks.algafood.api.model.response.EstadoResponse;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.EstadoService;
@@ -30,30 +33,38 @@ public class EstadoController {
 
 	@Autowired
 	private EstadoService estadoService;
+	
+	@Autowired
+	private EstadoResponseMapper estadoResponseMapper;
+	
+	@Autowired
+	private EstadoInputMapper estadoInputMapper;
 
 	@GetMapping
-	public List<Estado> listar() {
-		return estadoRepository.findAll();
+	public List<EstadoResponse> listar() {
+		return estadoResponseMapper.toCollectionResponse(estadoRepository.findAll());
 	}
 
 	@GetMapping("/{id}")
-	public Estado buscar(@PathVariable Long id) {
-		return estadoService.buscarOuFalhar(id);
+	public EstadoResponse buscar(@PathVariable Long id) {
+		return estadoResponseMapper.toResponse(estadoService.buscarOuFalhar(id));
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado adicionar(@RequestBody @Valid Estado estado) {
-		return estadoService.salvar(estado);
+	public EstadoResponse adicionar(@RequestBody @Valid EstadoInput estadoInput) {
+		Estado estado = estadoInputMapper.toDomain(estadoInput);
+		
+		return estadoResponseMapper.toResponse(estadoService.salvar(estado));
 	}
 
 	@PutMapping("/{id}")
-	public Estado atualizar(@PathVariable Long id, @RequestBody @Valid Estado estado) {
+	public EstadoResponse atualizar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput) {
 		Estado estadoAtual = estadoService.buscarOuFalhar(id);
+		
+		estadoInputMapper.fromInputToDomain(estadoInput, estadoAtual);
 
-		BeanUtils.copyProperties(estado, estadoAtual, "id");
-
-		return estadoService.salvar(estadoAtual);
+		return estadoResponseMapper.toResponse(estadoService.salvar(estadoAtual));
 	}
 
 	@DeleteMapping("/{id}")

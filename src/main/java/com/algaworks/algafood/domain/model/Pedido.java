@@ -1,7 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,11 +58,11 @@ public class Pedido {
 	
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
-	private LocalDateTime dataCriacao;
+	private OffsetDateTime dataCriacao;
 	
-	private LocalDateTime dataConfirmcao;
-	private LocalDateTime dataCancelamento;
-	private LocalDateTime dataEnrega;
+	private OffsetDateTime dataConfirmcao;
+	private OffsetDateTime dataCancelamento;
+	private OffsetDateTime dataEnrega;
 	
 	@OneToMany(mappedBy = "pedido")
 	private List<ItemPedido> itens = new ArrayList<>();
