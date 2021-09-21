@@ -27,16 +27,16 @@ import com.algaworks.algafood.domain.service.GrupoService;
 @RestController
 @RequestMapping("/grupos")
 public class GrupoController {
-	
+
 	@Autowired
 	private GrupoRepository grupoRepository;
 
 	@Autowired
 	private GrupoService grupoService;
-	
+
 	@Autowired
 	private GrupoResponseMapper grupoResponseMapper;
-	
+
 	@Autowired
 	private GrupoInputMapper grupoInputMapper;
 
@@ -54,14 +54,14 @@ public class GrupoController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoResponse adicionar(@RequestBody @Valid GrupoInput grupoInput) {
 		Grupo grupo = grupoInputMapper.toDomain(grupoInput);
-		
+
 		return grupoResponseMapper.toResponse(grupoService.salvar(grupo));
 	}
 
 	@PutMapping("/{id}")
 	public GrupoResponse atualizar(@PathVariable Long id, @RequestBody @Valid GrupoInput grupoInput) {
 		Grupo grupoAtual = grupoService.buscarOuFalhar(id);
-		
+
 		grupoInputMapper.fromInputToDomain(grupoInput, grupoAtual);
 
 		return grupoResponseMapper.toResponse(grupoService.salvar(grupoAtual));

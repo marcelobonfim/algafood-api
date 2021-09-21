@@ -1,10 +1,15 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +24,15 @@ import com.algaworks.algafood.api.mapper.generic.ResponseMapper;
 import com.algaworks.algafood.api.model.input.PedidoInput;
 import com.algaworks.algafood.api.model.response.PedidoResponse;
 import com.algaworks.algafood.api.model.response.PedidoResumoResponse;
+import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.filter.PedidoFilter;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.service.PedidoService;
+import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -45,9 +53,36 @@ public class PedidoController {
 	@Autowired
 	InputMapper<PedidoInput, Pedido> pedidoInputMapper;
 	
+//	@GetMapping
+//	public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
+//		List<Pedido> pedidos = pedidoRepository.findAll();
+//		List<PedidoResumoResponse> pedidosResumoResponse = pedidoResumoResponseMapper.toCollectionResponse(pedidos, PedidoResumoResponse.class);  
+//		
+//		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosResumoResponse);
+//		
+//		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+//		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());
+//		
+//		if (StringUtils.isNotBlank(campos)) {
+//			filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
+//		}
+//		
+//		pedidosWrapper.setFilters(filterProvider);
+//		
+//		return pedidosWrapper;
+//	}
+	
 	@GetMapping
-	public List<PedidoResumoResponse> listar() {
-		return pedidoResumoResponseMapper.toCollectionResponse(pedidoRepository.findAll(), PedidoResumoResponse.class);
+	public Page<PedidoResumoResponse> pesquisar(PedidoFilter pedidoFilter, @PageableDefault(size = 10) Pageable pageable) {
+		pageable = traduzirPageable(pageable);
+		
+		Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.comFiltro(pedidoFilter), pageable);
+		
+		List<PedidoResumoResponse> pedidosResumoResponse = pedidoResumoResponseMapper.toCollectionResponse(pedidosPage.getContent(), PedidoResumoResponse.class);
+		
+		Page<PedidoResumoResponse> pedidosResumoResponsePage = new PageImpl<>(pedidosResumoResponse, pageable, pedidosPage.getTotalElements());
+		
+		return pedidosResumoResponsePage;
 	}
 	
 	@GetMapping("{codigo}")
@@ -71,5 +106,21 @@ public class PedidoController {
 	    } catch (EntidadeNaoEncontradaException e) {
 	        throw new NegocioException(e.getMessage(), e);
 	    }
+	}
+	
+	private Pageable traduzirPageable(Pageable apiPageable) {
+		var mapeamento = Map.of(
+				"codigo", "codigo",
+				"subtotal", "subtotal",
+				"taxaFrete", "taxaFrete",
+				"valorTotal", "valorTotal",
+				"dataCriacao", "dataCriacao",
+				"restaurante.nome", "restaurante.nome",
+				"restaurante.id", "restaurante.id",
+				"usuario.id", "usuario.id",
+				"usuario.nome", "usuario.nome"
+			);
+		
+		return PageableTranslator.translate(apiPageable, mapeamento);
 	}
 }

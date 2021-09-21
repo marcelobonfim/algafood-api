@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,10 +46,16 @@ public class RestauranteProdutoController {
 	InputMapper<ProdutoInput, Produto> produtoInputMapper;
 
 	@GetMapping
-	public List<ProdutoResponse> listar(@PathVariable Long idRestaurante) {
+	public List<ProdutoResponse> listar(@PathVariable Long idRestaurante, @RequestParam(required = false) boolean incluirInativos) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(idRestaurante);
 
-		List<Produto> produtos = produtoRepository.findByRestaurante(restaurante);
+		List<Produto> produtos = null;
+		
+		if (incluirInativos) {
+			produtos = produtoRepository.findTodosByRestaurante(restaurante);
+		} else {
+			produtos = produtoRepository.findAtivosByRestaurante(restaurante);
+		}
 
 		return produtoResponseMapper.toCollectionResponse(produtos, ProdutoResponse.class);
 	}
@@ -71,9 +78,10 @@ public class RestauranteProdutoController {
 		produto = produtoService.salvar(produto);
 		return produtoResponseMapper.toResponse(produto, ProdutoResponse.class);
 	}
-	
+
 	@PutMapping("/{idProduto}")
-	public ProdutoResponse atualizar(@PathVariable Long idRestaurante, @PathVariable Long idProduto, @RequestBody @Valid ProdutoInput produtoInput) {
+	public ProdutoResponse atualizar(@PathVariable Long idRestaurante, @PathVariable Long idProduto,
+			@RequestBody @Valid ProdutoInput produtoInput) {
 		Produto produto = produtoService.buscarOuFalhar(idRestaurante, idProduto);
 
 		produtoInputMapper.fromInputToDomain(produtoInput, produto);
