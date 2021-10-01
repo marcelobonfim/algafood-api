@@ -110,7 +110,6 @@ public class Pedido {
 	public void confirmar() {
 		setStatus(StatusPedido.CONFIRMADO);
 		setDataConfirmacao(OffsetDateTime.now());
-		
 	}
 
 	public void entregar() {
