@@ -14,7 +14,7 @@ import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.StatusPedido;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
-import com.algaworks.algafood.domain.repository.VendaQueryService;
+import com.algaworks.algafood.domain.service.VendaQueryService;
 
 @Repository
 public class VendaQueryServiceImpl implements VendaQueryService {

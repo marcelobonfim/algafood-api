@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
-import com.algaworks.algafood.domain.repository.VendaQueryService;
-import com.algaworks.algafood.domain.repository.VendaReportService;
+import com.algaworks.algafood.domain.service.VendaQueryService;
+import com.algaworks.algafood.domain.service.VendaReportService;
 
 @RestController
 @RequestMapping("/estatisticas")

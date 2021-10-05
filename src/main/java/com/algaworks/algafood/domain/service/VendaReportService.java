@@ -1,4 +1,4 @@
-package com.algaworks.algafood.domain.repository;
+package com.algaworks.algafood.domain.service;
 
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 

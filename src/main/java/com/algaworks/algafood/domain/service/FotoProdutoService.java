@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.dto.NovaFoto;
-import com.algaworks.algafood.domain.repository.FotoStorageService;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
 
 @Service

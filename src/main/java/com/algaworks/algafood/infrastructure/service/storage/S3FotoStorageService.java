@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.algaworks.algafood.core.storage.StorageProperties;
 import com.algaworks.algafood.domain.model.dto.FotoRecuperada;
 import com.algaworks.algafood.domain.model.dto.NovaFoto;
-import com.algaworks.algafood.domain.repository.FotoStorageService;
+import com.algaworks.algafood.domain.service.FotoStorageService;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;

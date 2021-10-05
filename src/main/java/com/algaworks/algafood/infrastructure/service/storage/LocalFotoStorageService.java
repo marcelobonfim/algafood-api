@@ -10,7 +10,7 @@ import org.springframework.util.FileCopyUtils;
 import com.algaworks.algafood.core.storage.StorageProperties;
 import com.algaworks.algafood.domain.model.dto.FotoRecuperada;
 import com.algaworks.algafood.domain.model.dto.NovaFoto;
-import com.algaworks.algafood.domain.repository.FotoStorageService;
+import com.algaworks.algafood.domain.service.FotoStorageService;
 
 public class LocalFotoStorageService implements FotoStorageService {
 	

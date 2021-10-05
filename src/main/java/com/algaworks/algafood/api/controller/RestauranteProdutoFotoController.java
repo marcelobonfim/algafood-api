@@ -29,8 +29,8 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.dto.FotoRecuperada;
-import com.algaworks.algafood.domain.repository.FotoStorageService;
 import com.algaworks.algafood.domain.service.FotoProdutoService;
+import com.algaworks.algafood.domain.service.FotoStorageService;
 import com.algaworks.algafood.domain.service.ProdutoService;
 
 @RestController
