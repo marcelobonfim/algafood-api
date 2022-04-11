@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.controller.openapi.GrupoControllerOpenApi;
+import com.algaworks.algafood.api.controller.openapi.controller.GrupoControllerOpenApi;
 import com.algaworks.algafood.api.mapper.GrupoInputMapper;
 import com.algaworks.algafood.api.mapper.GrupoResponseMapper;
 import com.algaworks.algafood.api.model.input.GrupoInput;

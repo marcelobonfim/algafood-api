@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.model.response;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,8 +8,13 @@ import lombok.Setter;
 @Getter
 public class CidadeResumoResponse {
 	
+	@ApiModelProperty(example = "1")
 	private Long id;
+
+	@ApiModelProperty(example = "Uberlândia")
 	private String nome;
-    private String estado;
+
+	@ApiModelProperty(example = "Minas Gerais")
+	private String estado;
 
 }
