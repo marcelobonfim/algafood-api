@@ -1,11 +1,16 @@
 package com.algaworks.algafood.core.openapi;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -65,7 +70,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 //							.modelRef(new ModelRef("string"))
 //							.build()))
 				.additionalModels(typeResolver.resolve(Problem.class))
-				.ignoredParameterTypes(ServletWebRequest.class)
+				.ignoredParameterTypes(ServletWebRequest.class, File.class, Resource.class, URI.class, URL.class, InputStream.class)
 				.directModelSubstitute(Pageable.class, PageableResponseOpenApi.class)
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaResponse.class) , CozinhasResponseOpenApi.class))
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoResumoResponse.class) , PedidosResumoResponseOpenApi.class))
@@ -77,7 +82,9 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 						new Tag("Pedidos", "Gerencia os pedidos"),
 						new Tag("Restaurantes", "Gerencia os restaurantes"),
 						new Tag("Estados", "Gerencia os estados"),
-						new Tag("Produtos", "Gerencia os produtos"));
+						new Tag("Produtos", "Gerencia os produtos"),
+						new Tag("Usuários", "Gerencia os usuários"),
+						new Tag("Estatísticas", "Estatísticas da AlgaFood"));
 	}
 	
 	private List<ResponseMessage> globalDeleteResponseMessages() {
