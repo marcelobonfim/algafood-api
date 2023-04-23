@@ -1,10 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,13 +44,13 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	private UsuarioInputMapper usuarioInputMapper;
 
 	@GetMapping
-	public List<UsuarioResponse> listar() {
-		return usuarioResponseMapper.toCollectionResponse(usuarioRepository.findAll());
+	public CollectionModel<UsuarioResponse> listar() {
+		return usuarioResponseMapper.toCollectionModel(usuarioRepository.findAll());
 	}
 
 	@GetMapping("/{id}")
 	public UsuarioResponse buscar(@PathVariable Long id) {
-		return usuarioResponseMapper.toResponse(usuarioService.buscarOuFalhar(id));
+		return usuarioResponseMapper.toModel(usuarioService.buscarOuFalhar(id));
 	}
 
 	@PostMapping
@@ -59,7 +58,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	public UsuarioResponse adicionar(@RequestBody @Valid UsuarioNovoInput usuarioInput) {
 		Usuario usuario = usuarioInputMapper.toDomain(usuarioInput);
 		
-		return usuarioResponseMapper.toResponse(usuarioService.salvar(usuario));
+		return usuarioResponseMapper.toModel(usuarioService.salvar(usuario));
 	}
 
 	@PutMapping("/{id}")
@@ -68,7 +67,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		
 		usuarioInputMapper.fromInputToDomain(usuarioInput, usuarioAtual);
 
-		return usuarioResponseMapper.toResponse(usuarioService.salvar(usuarioAtual));
+		return usuarioResponseMapper.toModel(usuarioService.salvar(usuarioAtual));
 	}
 
 	@DeleteMapping("/{id}")

@@ -1,10 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.controller.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.mapper.CidadeInputMapper;
 import com.algaworks.algafood.api.mapper.CidadeResponseMapper;
@@ -49,14 +49,14 @@ public class CidadeController implements CidadeControllerOpenApi {
 	
 	@Override
 	@GetMapping
-	public List<CidadeResponse> listar() {
-		return cidadeResponseMapper.toCollectionResponse(cidadeRepository.findAll());
+	public CollectionModel<CidadeResponse> listar() {
+		return cidadeResponseMapper.toCollectionModel(cidadeRepository.findAll());
 	}
 	
 	@Override
 	@GetMapping("/{id}")
-	public CidadeResponse buscar(@PathVariable Long id) {
-		return cidadeResponseMapper.toResponse(cidadeService.buscarOuFalhar(id));
+	public CidadeResponse buscar(@PathVariable Long id) {	
+		return cidadeResponseMapper.toModel(cidadeService.buscarOuFalhar(id));
 	}
 	
 	@Override
@@ -66,7 +66,11 @@ public class CidadeController implements CidadeControllerOpenApi {
 		try {
 			Cidade cidade = cidadeInputMapper.toDomain(cidadeInput);
 			
-			return cidadeResponseMapper.toResponse(cidadeService.salvar(cidade));
+			CidadeResponse cidadeResponse = cidadeResponseMapper.toModel(cidadeService.salvar(cidade));
+			
+			ResourceUriHelper.addUriInResponseHeader(cidadeResponse.getId());
+			
+			return cidadeResponse;
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -80,7 +84,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 			
 			cidadeInputMapper.fromInputToDomain(cidadeInput, cidadeAtual);
 			
-			return cidadeResponseMapper.toResponse(cidadeService.salvar(cidadeAtual));
+			return cidadeResponseMapper.toModel(cidadeService.salvar(cidadeAtual));
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}

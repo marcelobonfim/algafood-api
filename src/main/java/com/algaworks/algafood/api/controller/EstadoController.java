@@ -1,10 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,13 +45,13 @@ public class EstadoController implements EstadoControllerOpenApi {
 	private EstadoInputMapper estadoInputMapper;
 
 	@GetMapping
-	public List<EstadoResponse> listar() {
-		return estadoResponseMapper.toCollectionResponse(estadoRepository.findAll());
+	public CollectionModel<EstadoResponse> listar() {
+		return estadoResponseMapper.toCollectionModel(estadoRepository.findAll());
 	}
 
 	@GetMapping("/{id}")
 	public EstadoResponse buscar(@PathVariable Long id) {
-		return estadoResponseMapper.toResponse(estadoService.buscarOuFalhar(id));
+		return estadoResponseMapper.toModel(estadoService.buscarOuFalhar(id));
 	}
 
 	@PostMapping
@@ -60,7 +59,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 	public EstadoResponse adicionar(@RequestBody @Valid EstadoInput estadoInput) {
 		Estado estado = estadoInputMapper.toDomain(estadoInput);
 		
-		return estadoResponseMapper.toResponse(estadoService.salvar(estado));
+		return estadoResponseMapper.toModel(estadoService.salvar(estado));
 	}
 
 	@PutMapping("/{id}")
@@ -69,7 +68,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 		
 		estadoInputMapper.fromInputToDomain(estadoInput, estadoAtual);
 
-		return estadoResponseMapper.toResponse(estadoService.salvar(estadoAtual));
+		return estadoResponseMapper.toModel(estadoService.salvar(estadoAtual));
 	}
 
 	@DeleteMapping("/{id}")

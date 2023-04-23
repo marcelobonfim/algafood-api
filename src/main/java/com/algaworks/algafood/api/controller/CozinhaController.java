@@ -1,14 +1,13 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,28 +47,30 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	
 	@Autowired
 	private CozinhaInputMapper cozinhaInputMapper;
+	
+	@Autowired
+	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
 	@GetMapping
-	public Page<CozinhaResponse> listar(@PageableDefault(size = 10) Pageable pageable) {
+	public PagedModel<CozinhaResponse> listar(@PageableDefault(size = 10) Pageable pageable) {
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 		
-		List<CozinhaResponse> cozinhasResponse = cozinhaResponseMapper.toCollectionResponse(cozinhasPage.getContent());
+		PagedModel<CozinhaResponse> cozinhasPagedModel = pagedResourcesAssembler
+				.toModel(cozinhasPage, cozinhaResponseMapper);
 		
-		Page<CozinhaResponse> cozinhasResponsePage = new PageImpl<CozinhaResponse>(cozinhasResponse, pageable, cozinhasPage.getTotalElements());
-		
-		return cozinhasResponsePage;
+		return cozinhasPagedModel;
 	}
 
 	@GetMapping("/{id}")
 	public CozinhaResponse buscar(@PathVariable Long id) {
-		return cozinhaResponseMapper.toResponse(cozinhaService.buscarOuFalhar(id));
+		return cozinhaResponseMapper.toModel(cozinhaService.buscarOuFalhar(id));
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaResponse adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
 		Cozinha cozinha = cozinhaInputMapper.toDomain(cozinhaInput);
-		return cozinhaResponseMapper.toResponse(cozinhaService.salvar(cozinha));
+		return cozinhaResponseMapper.toModel(cozinhaService.salvar(cozinha));
 	}
 
 	@PutMapping("/{id}")
@@ -78,7 +79,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 		
 		cozinhaInputMapper.fromInputToDomain(cozinhaInput, cozinhaAtual);
 
-		return cozinhaResponseMapper.toResponse(cozinhaService.salvar(cozinhaAtual));
+		return cozinhaResponseMapper.toModel(cozinhaService.salvar(cozinhaAtual));
 	}
 
 	@DeleteMapping("/{id}")
